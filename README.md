@@ -28,9 +28,9 @@ http://localhost:5200/graphiql/
 
 Examples of GraphQL queries:
 
-GraphQL requests:
+### `GraphQL requests:`
 
-1. ### `Login`
+### `1. Login`
 
 mutation login($loginData: LoginInput!){
   login(loginData: $loginData) {expiresAt, token, user{id, email} }
@@ -44,7 +44,7 @@ Query variables:
   }
 }
 
-2. SignUp
+### `2. SignUp`
 
 mutation signUp($signUpData: SignUpInput! ){
   signUp(signUpData: $signUpData)
@@ -58,13 +58,13 @@ Query variables:
   }
 }
 
-3. Get tabs
+### `3. Get tabs`
 
 query Tabs{
   tabs{id, name, logo, events{title}}
 }
 
-4. Add Event 
+### `4. Add Event`
 
 mutation AddEvent($createData: EventInput!){
   createEvent(createData: $createData)
@@ -83,7 +83,7 @@ Query variables:
   }
 }
 
-5. Add Tab
+### `5. Add Tab`
 mutation AddTab($createData: TabInput!){
   createTab(createData: $createData)
 }
