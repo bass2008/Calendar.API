@@ -25,3 +25,86 @@ or run project with release mode for development/stage/production environment:
 5) Project is found on: 
 http://localhost:5200/graphiql/
 
+
+Examples of GraphQL queries:
+
+GraphQL requests:
+
+1. ### `Login`
+
+mutation login($loginData: LoginInput!){
+  login(loginData: $loginData) {expiresAt, token, user{id, email} }
+}
+
+Query variables:
+{
+  "loginData": {
+    "email": "test@test.com",
+    "password": "222"
+  }
+}
+
+2. SignUp
+
+mutation signUp($signUpData: SignUpInput! ){
+  signUp(signUpData: $signUpData)
+}
+
+Query variables:
+{
+  "signUpData": {
+    "email": "test",
+    "password": "123"
+  }
+}
+
+3. Get tabs
+
+query Tabs{
+  tabs{id, name, logo, events{title}}
+}
+
+4. Add Event 
+
+mutation AddEvent($createData: EventInput!){
+  createEvent(createData: $createData)
+}
+
+Query variables:
+{
+  "createData": {
+    "title": "test event title",
+    "description": "test event desc",
+    "start": 1,
+    "end": 2,
+    "repeat": 1,
+    "notification": 1,
+    "tabId": 1
+  }
+}
+
+5. Add Tab
+mutation AddTab($createData: TabInput!){
+  createTab(createData: $createData)
+}
+
+Query variables:
+{
+  "createData": {
+    "name": "test tab 2",
+    "logo": "test logo 2"    
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
