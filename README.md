@@ -6,14 +6,14 @@
 Clone repository in your directory and switch branch on "dev":
 
 ### `cd C:\git`
-### `git clone <URL>`
-### `cd Spartan.API`
+### `git clone https://github.com/bass2008/Calendar.API.git`
+### `cd Calendar.API`
 ### `git checkout dev`
 
 3) If you want to use local database run next steps. You could use database from development environment and skip them.
 
 ### Skip if you use development database
-### `cd C:\Git\Spartan.API\Spartan.API`
+### `cd C:\Git\Calendar.API\Calendar.API`
 ### `dotnet tool install --global dotnet-ef --version 2.2.6`
 ### `dotnet-ef database update`
 
