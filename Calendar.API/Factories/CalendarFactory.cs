@@ -8,20 +8,13 @@ using Calendar.Domain.Options;
 
 namespace Calendar.API.Factories
 {
-    public interface ICalendarFactory 
-    {
-        CognitoUserPool GetCognitoUserPool();
-        AmazonCognitoIdentityProviderClient CreateCognitoClient();
-        IPublicSchema CreatePublicSchema(IServiceProvider sp);
-    }
-
-    public class CalendarFactory : ICalendarFactory
+    public class CalendarFactory
     {
         private readonly CognitoOptions _cognitoOptions;
 
-        public CalendarFactory(CognitoOptions cognitoOptions)
+        public CalendarFactory() //(CognitoOptions cognitoOptions)
         {
-            _cognitoOptions = cognitoOptions;
+            //_cognitoOptions = cognitoOptions;
         }
         
         public IPublicSchema CreatePublicSchema(IServiceProvider sp)

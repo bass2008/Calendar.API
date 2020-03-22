@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using GraphQL.Types;
 using Calendar.API.Decorators;
 using Calendar.API.Models.Entities;
@@ -9,9 +8,9 @@ using Calendar.DAL.Interfaces;
 using Calendar.Domain;
 using Calendar.Domain.Models;
 using Calendar.Domain.Models.Params;
-using Calendar.DAL;
 using System.Linq;
 using Calendar.Domain.Exceptions;
+using Calendar.DAL.Factories;
 
 namespace Calendar.API.Models.Common
 {
@@ -24,7 +23,7 @@ namespace Calendar.API.Models.Common
             _requestDecorator = requestDecorator;
         }
 
-        protected void AddUserAsync(IUserRepository repository, CognitoService cognitoService, CalendarDbContext dbContext)
+        protected void AddUserAsync(IUserRepository repository, CognitoService cognitoService, CalendarDbFactory dbFactory)
         {
             FieldAsync<NonNullGraphType<BooleanGraphType>>(
                "signUp",
@@ -33,16 +32,19 @@ namespace Calendar.API.Models.Common
                ),
                resolve: async resolveContext => {
                    return await _requestDecorator.Run(resolveContext, async context => {
-                       var data = context.GetArgument<UserWithPassword>("signUpData");
-                       await cognitoService.SignUpAsync(data.Email, data.Password);
+                       using (var dbContext = dbFactory.CreateDbContext())
+                       {
+                           var data = context.GetArgument<UserWithPassword>("signUpData");
+                           await cognitoService.SignUpAsync(data.Email, data.Password);
 
-                       var createData = context.GetArgument<User>("signUpData");
-                       createData.DateCreated = DateTime.Now.ToUniversalTime();
-                       createData.LastVisitDate = DateTime.Now.ToUniversalTime();
+                           var createData = context.GetArgument<User>("signUpData");
+                           createData.DateCreated = DateTime.Now.ToUniversalTime();
+                           createData.LastVisitDate = DateTime.Now.ToUniversalTime();
 
-                       await repository.AddAsync(createData);
+                           await repository.AddAsync(createData);
 
-                       return true;
+                           return true;
+                       }
                    });
                });
 
@@ -53,31 +55,34 @@ namespace Calendar.API.Models.Common
                 ),
                 resolve: async resolveContext => {
                     return await _requestDecorator.Run(resolveContext, async context => {
-                        var data = context.GetArgument<UserWithPassword>("loginData");
-
-                        // TODO: remove to repository
-                        var user = dbContext.Users.SingleOrDefault(x => x.Email == data.Email);
-
-                        if (user == null)
-                            throw new CalendarException($"User with email: {data.Email} is not found");
-
-                        var token = await cognitoService.LoginAsync(data.Email, data.Password, data.NewPasswordIfRequired);
-
-                        await repository.UpdateLoginAsync(data.Email);
-
-                        var loginInfo = new LoginInfo
+                        using (var dbContext = dbFactory.CreateDbContext())
                         {
-                            User = user,
-                            Token = token,
-                            ExpiresAt = DateTime.Now
-                                .ToUniversalTime()
-                                .AddHours(1)
-                                .Subtract(new DateTime(1970, 1, 1))
-                                .TotalSeconds
-                                .ToString()
-                        };
+                            var data = context.GetArgument<UserWithPassword>("loginData");
 
-                        return loginInfo;
+                            // TODO: remove to repository
+                            var user = dbContext.Users.SingleOrDefault(x => x.Email == data.Email);
+
+                            if (user == null)
+                                throw new CalendarException($"User with email: {data.Email} is not found");
+
+                            var token = await cognitoService.LoginAsync(data.Email, data.Password, data.NewPasswordIfRequired);
+
+                            await repository.UpdateLoginAsync(data.Email);
+
+                            var loginInfo = new LoginInfo
+                            {
+                                User = user,
+                                Token = token,
+                                ExpiresAt = DateTime.Now
+                                    .ToUniversalTime()
+                                    .AddHours(1)
+                                    .Subtract(new DateTime(1970, 1, 1))
+                                    .TotalSeconds
+                                    .ToString()
+                            };
+
+                            return loginInfo;
+                        }
                     });
                 });
 

@@ -43,7 +43,7 @@ namespace Calendar.Domain.Services
 
         public async Task<string> GetConnectionString()
         {
-              return "Host=localhost;Database=calendarApi;Username=postgres;Password=ci48kck3mDc2";
+              return "Host=database-2.c6alusknbird.us-east-2.rds.amazonaws.com;Database=calendarApi;Username=postgres;Password=deg243Qft2vrrr";
             //return "Host=localhost;Database=calendarApi;Username=root;Password=ci48kck3mDc2";
 
             //return await Get($"{EnvironmentPrefix}_{ConnectionStringKey}");
@@ -106,6 +106,8 @@ namespace Calendar.Domain.Services
         
         public async Task<string> Get(string key)
         {
+            Console.WriteLine($"Try get: {key}");
+
             var request = new GetSecretValueRequest
             {
                 SecretId = key

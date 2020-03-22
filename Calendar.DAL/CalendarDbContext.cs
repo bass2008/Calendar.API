@@ -8,7 +8,7 @@ namespace Calendar.DAL
     public class CalendarDbContext : DbContext
     {
         private readonly SecretManager _secretManager;
-
+        
         public CalendarDbContext(SecretManager secretManager)
         {
             _secretManager = secretManager;
@@ -29,18 +29,20 @@ namespace Calendar.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            Console.WriteLine("OnConfiguring");
+        
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
+            
             if (environment == "Testing")
             {
                 optionsBuilder.UseInMemoryDatabase(databaseName: "TestInMemoryEfDatabase");
                 return;
             }
-
+            
             var connectionString = _secretManager.GetConnectionString().Result;
-
+            
             Console.WriteLine($"Try connect to: {connectionString}");
-
+            
             optionsBuilder.UseNpgsql(connectionString);
         }
     }   

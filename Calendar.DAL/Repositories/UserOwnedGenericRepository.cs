@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Calendar.DAL.Factories;
 using Calendar.DAL.Interfaces;
 using Calendar.DAL.Services;
 using Calendar.Domain;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Calendar.DAL.Factories;
 
 namespace Calendar.DAL.Repositories
 {

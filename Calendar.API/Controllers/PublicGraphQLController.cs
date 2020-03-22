@@ -13,19 +13,16 @@ namespace Calendar.API.Controllers
     [Route("/graphql")]
     public class PublicGraphQLController : BaseGraphQLController
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
         public PublicGraphQLController(
             IHttpContextAccessor httpContextAccessor,
             IPublicSchema schema, DocumentExecuter documentExecuter, ILogger<BaseGraphQLController> logger)
             : base(schema, documentExecuter, logger)
         {
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        [Authorize(Policy = "JwtBearer")]
+        //[AllowAnonymous]
+        //[Authorize(Policy = "JwtBearer")]
         public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
         {
             return await MiniProfiler.Current.Inline(async () => await RunQuery(query), "GraphQL Body");

@@ -16,11 +16,11 @@ namespace Calendar.API.Services
 
         private readonly string _clientId;
 
-        public CognitoService(AmazonCognitoIdentityProviderClient client, CognitoUserPool userPool, CognitoOptions options)
+        public CognitoService()// (AmazonCognitoIdentityProviderClient client, CognitoUserPool userPool, CognitoOptions options)
         {
-            _client = client;
-            _userPool = userPool;
-            _clientId = options.ClientId;
+            //_client = client;
+            //_userPool = userPool;
+            //_clientId = options.ClientId;
         }
 
         public async Task SignUpAsync(string email, string password)

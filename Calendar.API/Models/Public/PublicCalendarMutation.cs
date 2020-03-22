@@ -3,7 +3,7 @@ using Calendar.API.Models.Common;
 using Calendar.API.Models.Entities;
 using Calendar.API.Models.Inputs;
 using Calendar.API.Services;
-using Calendar.DAL;
+using Calendar.DAL.Factories;
 using Calendar.DAL.Interfaces;
 using Calendar.Domain.Models;
 
@@ -12,7 +12,7 @@ namespace Calendar.API.Models.Public
     public class PublicCalendarMutation : BaseCalendarMutation
     {
         public PublicCalendarMutation(
-            CalendarDbContext dbContext,
+            CalendarDbFactory dbFactory,
             CalendarRequestDecorator requestDecorator,
             IUserOwnedGenericRepository<Tab> tabRepository,
             IUserOwnedGenericRepository<Event> eventRepository,
@@ -24,7 +24,7 @@ namespace Calendar.API.Models.Public
             AddFieldAsync<Event, GraphQLEvent, GraphQLEventInput>("Event", eventRepository);
             AddSingleFieldAsync<UserPreference, GraphQLUserPreference, GraphQLUserPreferenceInput>("UserPreference", userPreferenceRepository);
 
-            AddUserAsync(userRepository, cognitoService, dbContext);
+            AddUserAsync(userRepository, cognitoService, dbFactory);
         }
     }
 }

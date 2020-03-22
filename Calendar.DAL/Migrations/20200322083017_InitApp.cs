@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Calendar.DAL.Migrations
 {
-    public partial class InitAgain2 : Migration
+    public partial class InitApp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace Calendar.DAL.Migrations
                     End = table.Column<int>(nullable: false),
                     Repeat = table.Column<int>(nullable: false),
                     Notification = table.Column<int>(nullable: false),
-                    TabId = table.Column<int>(nullable: true)
+                    TabId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,7 +64,7 @@ namespace Calendar.DAL.Migrations
                         column: x => x.TabId,
                         principalTable: "Tabs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

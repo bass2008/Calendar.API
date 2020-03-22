@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using SecretManager = Calendar.Domain.Services.SecretManager;
+using Microsoft.EntityFrameworkCore;
 
 namespace Calendar.API.Extensions
 {
@@ -76,24 +77,22 @@ namespace Calendar.API.Extensions
                     .Build());
             });
 
-            var cognitoSettings = sm.GetCognitoOptions().Result;
-
-            var s = sm.GetConnectionString().Result;
-
-            services
-                .AddAuthentication(opt => { opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; })
-                .AddJwtBearer(opt =>
-                {
-                    opt.SaveToken = true;
-                    opt.Audience = cognitoSettings.ClientId;
-                    opt.Authority = $"https://cognito-idp.us-east-2.amazonaws.com/{cognitoSettings.UserPoolId}";
-                    opt.TokenValidationParameters = 
-                    JwtHelper.TokenValidationParameters(cognitoSettings.RSAModulus, cognitoSettings.RSAExponent, cognitoSettings.JwtIssuer);
-                        // new TokenValidationParameters
-                        // {
-                        //     RoleClaimType = "cognito:groups",
-                        // };
-                });
+            // var cognitoSettings = sm.GetCognitoOptions().Result;
+            // 
+            // services
+            //     .AddAuthentication(opt => { opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; })
+            //     .AddJwtBearer(opt =>
+            //     {
+            //         opt.SaveToken = true;
+            //         opt.Audience = cognitoSettings.ClientId;
+            //         opt.Authority = $"https://cognito-idp.us-east-2.amazonaws.com/{cognitoSettings.UserPoolId}";
+            //         opt.TokenValidationParameters = 
+            //         JwtHelper.TokenValidationParameters(cognitoSettings.RSAModulus, cognitoSettings.RSAExponent, cognitoSettings.JwtIssuer);
+            //             // new TokenValidationParameters
+            //             // {
+            //             //     RoleClaimType = "cognito:groups",
+            //             // };
+            //     });
 
             //services.AddAuthentication().AddJwtBearer(
             //    (jwtBearerOptions) => {
@@ -103,18 +102,19 @@ namespace Calendar.API.Extensions
 
             // Clients
 
-            services.AddSingleton(x => sm.GetCognitoOptions().Result);
-            services.AddSingleton<ICalendarFactory, CalendarFactory>();
-            services.AddSingleton<ICalendarFactory, CalendarFactory>();
-            services.AddSingleton(x => x.GetService<ICalendarFactory>().CreateCognitoClient());
-            services.AddSingleton(x => x.GetService<ICalendarFactory>().GetCognitoUserPool());
+            // services.AddSingleton(x => sm.GetCognitoOptions().Result);
+            services.AddSingleton<CalendarFactory>();
+            // services.AddSingleton(x => x.GetService<CalendarFactory>().CreateCognitoClient());
+            // services.AddSingleton(x => x.GetService<CalendarFactory>().GetCognitoUserPool());
 
             // Repositories & services
 
-            var connectionString = configuration.GetConnectionString("Calendar");
+            //var cs = sm.GetConnectionString().Result;
+
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(IUserOwnedGenericRepository<>), typeof(UserOwnedGenericRepository<>));
             services.AddSingleton<IUserRepository, UserRepository>();
+
             services.AddDbContext<CalendarDbContext>();
 
             // GraphQL
@@ -124,7 +124,7 @@ namespace Calendar.API.Extensions
 
             services.AddSingleton(x => {
                 var sp1 = WindsorRegistrationHelper.CreateServiceProvider(_container, services);
-                return x.GetService<ICalendarFactory>().CreatePublicSchema(sp1);
+                return x.GetService<CalendarFactory>().CreatePublicSchema(sp1);
             });
 
             // Auto registration

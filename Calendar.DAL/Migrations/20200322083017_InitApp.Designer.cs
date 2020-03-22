@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Calendar.DAL.Migrations
 {
     [DbContext(typeof(CalendarDbContext))]
-    [Migration("20200129195744_AddForeignKeyEventToTab")]
-    partial class AddForeignKeyEventToTab
+    [Migration("20200322083017_InitApp")]
+    partial class InitApp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

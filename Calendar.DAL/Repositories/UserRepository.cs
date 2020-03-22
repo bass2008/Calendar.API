@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Calendar.DAL.Factories;
 using Calendar.DAL.Interfaces;
 using Calendar.DAL.Services;
 using Calendar.Domain.Models;
 using System;
 using System.Threading.Tasks;
+using Calendar.DAL.Factories;
 
 namespace Calendar.DAL.Repositories
 {
